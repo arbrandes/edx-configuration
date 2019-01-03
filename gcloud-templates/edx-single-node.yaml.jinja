@@ -11,6 +11,7 @@ resources:
         autoDelete: true
         initializeParams:
           sourceImage: {{ properties["image"] }}
+          diskSizeGb: {{ properties["size"] }}
       networkInterfaces:
       - network: global/networks/default
         accessConfigs:
