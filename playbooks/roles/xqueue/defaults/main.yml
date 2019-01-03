@@ -30,6 +30,7 @@ XQUEUE_LOCAL_LOGLEVEL: 'INFO'
 # If you try to use an Instance IAM Role rather than a user key S3 will invalidate the signed
 # URLs used in uploaded file submissions.  If you don't upload files on grade submissions, then
 # it's ok, the submission is stored directly in the database.
+XQUEUE_AWS_S3_HOST: !!null
 XQUEUE_AWS_ACCESS_KEY_ID : !!null
 XQUEUE_AWS_SECRET_ACCESS_KEY : !!null
 
@@ -92,6 +93,7 @@ XQUEUE_CONFIG:
   NEWRELIC_APPNAME: "{{ XQUEUE_NEWRELIC_APPNAME }}"
   SUBMISSION_PROCESSING_DELAY: "{{ XQUEUE_SUBMISSION_PROCESSING_DELAY }}"
   CONSUMER_DELAY: "{{ XQUEUE_CONSUMER_DELAY }}"
+  AWS_S3_HOST:  "{{ XQUEUE_AWS_S3_HOST }}"
   AWS_ACCESS_KEY_ID:  "{{ XQUEUE_AWS_ACCESS_KEY_ID }}"
   AWS_SECRET_ACCESS_KEY: "{{ XQUEUE_AWS_SECRET_ACCESS_KEY }}"
   SWIFT_USERNAME: "{{ XQUEUE_SWIFT_USERNAME }}"
