@@ -1,0 +1,35 @@
+resources:
+  - name: {{ env["deployment"] }}-server
+    type: compute.v1.instance
+    properties:
+      zone: {{ properties["zone"] }}
+      machineType: zones/{{ properties["zone"] }}/machineTypes/{{ properties["type"] }}
+      disks:
+      - deviceName: boot
+        type: PERSISTENT
+        boot: true
+        autoDelete: true
+        initializeParams:
+          sourceImage: {{ properties["image"] }}
+      networkInterfaces:
+      - network: global/networks/default
+        accessConfigs:
+        - name: External NAT
+          type: ONE_TO_ONE_NAT
+      metadata:
+       items:
+       - key: user-data
+         value: |
+           {{ imports["cloud-config.yaml"]|indent(width=11,blank=True) }}
+
+  - name: {{ env["deployment"] }}-firewall
+    type: compute.v1.firewall
+    properties:
+      sourceRanges: ["0.0.0.0/0"]
+      allowed:
+        - IPProtocol: TCP
+          ports: ["22", "80", "443"]
+
+outputs:
+- name: public-ip
+  value: $(ref.{{ env["deployment"] }}-server.networkInterfaces[0].accessConfigs[0].natIP)
