@@ -1,4 +1,17 @@
 resources:
+  - name: {{ env["deployment"] }}-firewall
+    type: compute.v1.firewall
+    properties:
+      sourceRanges: ["0.0.0.0/0"]
+      allowed:
+        - IPProtocol: TCP
+          ports: ["22", "80", "443"]
+
+  - name: {{ env["deployment"] }}-public-ip
+    type: compute.v1.address
+    properties:
+      region: {{ properties["region"] }}
+
   - name: {{ env["deployment"] }}-server
     type: compute.v1.instance
     properties:
@@ -17,20 +30,13 @@ resources:
         accessConfigs:
         - name: External NAT
           type: ONE_TO_ONE_NAT
+          natIP: $(ref.{{ env["deployment"] }}-public-ip.address)
       metadata:
        items:
        - key: user-data
          value: |
            {{ imports["cloud-config.yaml"]|indent(width=11,blank=True) }}
 
-  - name: {{ env["deployment"] }}-firewall
-    type: compute.v1.firewall
-    properties:
-      sourceRanges: ["0.0.0.0/0"]
-      allowed:
-        - IPProtocol: TCP
-          ports: ["22", "80", "443"]
-
 outputs:
 - name: public-ip
-  value: $(ref.{{ env["deployment"] }}-server.networkInterfaces[0].accessConfigs[0].natIP)
+  value: $(ref.{{ env["deployment"] }}-public-ip.address)
